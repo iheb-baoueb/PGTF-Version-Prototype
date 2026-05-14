@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -13,8 +13,10 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useMachine } from "../context/MachineContext";
 import { SimulationPanel } from "./SimulationPanel";
 
 const NAV_ITEMS = [
@@ -30,6 +32,10 @@ export function Layout() {
   const [connected, setConnected] = useState(true);
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuth();
+  const { machineState } = useMachine();
+  const [emergencyFlash, setEmergencyFlash] = useState(false);
+  const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevStateRef = useRef(machineState);
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/login");
@@ -41,6 +47,21 @@ export function Layout() {
       setConnected(Math.random() > 0.02);
     }, 1000);
     return () => clearInterval(t);
+  }, []);
+
+  // Trigger red flash for 4s when emergency starts
+  useEffect(() => {
+    if (machineState === "emergency" && prevStateRef.current !== "emergency") {
+      setEmergencyFlash(true);
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = setTimeout(() => setEmergencyFlash(false), 4000);
+    }
+    prevStateRef.current = machineState;
+  }, [machineState]);
+
+  // Clear timer on unmount
+  useEffect(() => {
+    return () => { if (flashTimerRef.current) clearTimeout(flashTimerRef.current); };
   }, []);
 
   const handleLogout = () => { logout(); navigate("/login"); };
@@ -225,6 +246,46 @@ export function Layout() {
 
       {/* Simulation panel */}
       <SimulationPanel />
+
+      {/* Emergency flash overlay — appears only on ARRET_URGENCE trigger, fades after 4s */}
+      <AnimatePresence>
+        {emergencyFlash && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.25, 0, 0.28, 0, 0.2, 0, 0.15, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 3.5, ease: "easeOut" }}
+              className="fixed inset-0 bg-red-600 pointer-events-none z-50"
+            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0.5, 1, 0.3, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 3.5, ease: "easeOut" }}
+              className="fixed inset-0 pointer-events-none z-50"
+              style={{ boxShadow: "inset 0 0 80px 30px rgba(220,38,38,0.6)" }}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -60 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -60 }}
+              transition={{ type: "spring", damping: 16, duration: 0.4 }}
+              className="fixed top-5 left-1/2 -translate-x-1/2 z-[60] pointer-events-none"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: 5, duration: 0.5 }}
+                className="flex items-center gap-3 bg-red-700 border-2 border-red-400 px-6 py-3 rounded-2xl shadow-2xl shadow-red-900/70"
+              >
+                <AlertTriangle className="w-5 h-5 text-white shrink-0" />
+                <span className="text-white text-sm tracking-widest uppercase">⚠ ARRÊT D'URGENCE ACTIVÉ</span>
+                <AlertTriangle className="w-5 h-5 text-white shrink-0" />
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,8 +1,7 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   FileDown,
-  FileText,
   Search,
   Filter,
   AlertTriangle,
@@ -53,7 +52,6 @@ function exportCSV(events: PGTFEvent[]) {
 // ─── component ────────────────────────────────────────────────────────────────
 export function Historique() {
   const { events } = useEvents();
-  const printRef = useRef<HTMLDivElement>(null);
 
   // Filters
   const [search, setSearch] = useState("");
@@ -100,8 +98,6 @@ export function Historique() {
     enCours: filtered.filter((e) => e.duration_min === null).length,
   }), [filtered]);
 
-  const handlePrint = () => window.print();
-
   const formatDate = (d: Date) =>
     d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -110,18 +106,8 @@ export function Historique() {
 
   return (
     <div className="p-4 md:p-5 space-y-4">
-      {/* Print styles */}
-      <style>{`
-        @media print {
-          body { background: white !important; color: black !important; }
-          .no-print { display: none !important; }
-          .print-area { display: block !important; }
-          * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-        }
-      `}</style>
-
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3 no-print">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-white">Historique des Événements</h1>
           <p className="text-xs text-gray-400 mt-0.5">
@@ -136,18 +122,11 @@ export function Historique() {
             <FileDown className="w-3.5 h-3.5" />
             Export CSV
           </button>
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/25 text-blue-400 rounded-xl text-xs hover:bg-blue-500/20 transition-all"
-          >
-            <FileText className="w-3.5 h-3.5" />
-            Export PDF
-          </button>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-3 no-print">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
         {[
           { label: "Total",              value: stats.total,          color: "text-white" },
           { label: "Arrêts Fin Shift",   value: stats.arretFinShift,  color: "text-red-400" },
@@ -169,7 +148,7 @@ export function Historique() {
       </div>
 
       {/* Filters */}
-      <div className="bg-[#0d1526] border border-[#1e3a5f]/50 rounded-xl p-4 no-print">
+      <div className="bg-[#0d1526] border border-[#1e3a5f]/50 rounded-xl p-4">
         <div className="flex items-center gap-2 mb-3">
           <Filter className="w-4 h-4 text-gray-400" />
           <p className="text-sm text-white">Filtres</p>
@@ -242,13 +221,7 @@ export function Historique() {
       </div>
 
       {/* Events table */}
-      <div ref={printRef} className="bg-[#0d1526] border border-[#1e3a5f]/50 rounded-xl overflow-hidden">
-        {/* Print header */}
-        <div className="hidden print-area p-4 border-b border-gray-200">
-          <h2 className="text-black">LEONI Tunisia · PGTF Monitor — Historique des Événements</h2>
-          <p className="text-sm text-gray-500">Généré le {new Date().toLocaleString("fr-FR")} · {filtered.length} événements</p>
-        </div>
-
+      <div className="bg-[#0d1526] border border-[#1e3a5f]/50 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -343,7 +316,7 @@ export function Historique() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-[#1e3a5f]/30 no-print">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-[#1e3a5f]/30">
             <p className="text-xs text-gray-500">
               {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} sur {filtered.length}
             </p>
