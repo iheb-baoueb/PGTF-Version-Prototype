@@ -478,15 +478,17 @@ export function Dashboard() {
                   <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e3a5f25" />
-              <XAxis dataKey="t" hide />
+              <CartesianGrid key="grid" strokeDasharray="3 3" stroke="#1e3a5f25" />
+              <XAxis key="xaxis" dataKey="t" hide />
               <YAxis
+                key="yaxis"
                 tick={{ fill: "#4b5563", fontSize: 9 }}
                 domain={[0, 52]}
                 tickCount={6}
                 tickFormatter={(v) => `${v}Hz`}
               />
               <Tooltip
+                key="tooltip"
                 contentStyle={{ backgroundColor: "#0d1526", border: "1px solid #1e3a5f", borderRadius: 10, fontSize: 11 }}
                 labelStyle={{ color: "#9ca3af" }}
                 itemStyle={{ color: "#06b6d4" }}
@@ -496,6 +498,7 @@ export function Dashboard() {
               <ReferenceLine key="ref-ralent" y={thresholds.speedRalentHz} stroke="#f59e0b" strokeDasharray="4 4" label={{ value: `Ralent. ${thresholds.speedRalentHz}Hz`, fill: "#f59e0b", fontSize: 9, position: "right" }} />
               <ReferenceLine key="ref-min" y={thresholds.speedMinHz} stroke="#ef4444" strokeDasharray="4 4" label={{ value: `Min ${thresholds.speedMinHz}Hz`, fill: "#ef4444", fontSize: 9, position: "right" }} />
               <Area
+                key="area-hz"
                 type="monotone"
                 dataKey="hz"
                 stroke="#06b6d4"
