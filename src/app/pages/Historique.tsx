@@ -16,10 +16,9 @@ import { useEvents, EventType, PGTFEvent } from "../context/EventsContext";
 
 // ─── config ───────────────────────────────────────────────────────────────────
 const EVENT_CFG: Record<EventType, { label: string; icon: typeof AlertTriangle; color: string; bg: string; border: string }> = {
-  ARRET_FIN_SHIFT: { label: "Arrêt Fin Shift",    icon: XCircle,       color: "text-red-400",    bg: "bg-red-500/10",    border: "border-red-500/25" },
-  ARRET_URGENCE:   { label: "Arrêt d'Urgence",    icon: AlertTriangle, color: "text-rose-300",   bg: "bg-rose-600/15",   border: "border-rose-500/50" },
-  BAISSE_VITESSE:  { label: "Baisse de Vitesse",  icon: TrendingDown,  color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/25" },
-  RALENTISSEMENT:  { label: "Ralentissement",     icon: TrendingDown,  color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/25" },
+  ARRET_FIN_SHIFT: { label: "Arrêt Fin Shift",  icon: XCircle,       color: "text-red-400",    bg: "bg-red-500/10",    border: "border-red-500/25" },
+  ARRET_URGENCE:   { label: "Arrêt d'Urgence",  icon: AlertTriangle, color: "text-rose-300",   bg: "bg-rose-600/15",   border: "border-rose-500/50" },
+  RALENTISSEMENT:  { label: "Ralentissement",   icon: TrendingDown,  color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/25" },
 };
 
 const PAGE_SIZE = 12;
@@ -92,7 +91,6 @@ export function Historique() {
     total: filtered.length,
     arretFinShift: filtered.filter((e) => e.event_type === "ARRET_FIN_SHIFT").length,
     arretUrgence: filtered.filter((e) => e.event_type === "ARRET_URGENCE").length,
-    baisseVitesse: filtered.filter((e) => e.event_type === "BAISSE_VITESSE").length,
     ralent: filtered.filter((e) => e.event_type === "RALENTISSEMENT").length,
     dureeTotal: filtered.reduce((acc, e) => acc + (e.duration_min ?? 0), 0),
     enCours: filtered.filter((e) => e.duration_min === null).length,
@@ -128,12 +126,12 @@ export function Historique() {
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
         {[
-          { label: "Total",              value: stats.total,          color: "text-white" },
-          { label: "Arrêts Fin Shift",   value: stats.arretFinShift,  color: "text-red-400" },
-          { label: "Arrêts Urgence",     value: stats.arretUrgence,   color: "text-rose-300" },
-          { label: "Baisses de Vitesse", value: stats.baisseVitesse,  color: "text-amber-400" },
-          { label: "Ralentissements",    value: stats.ralent,         color: "text-orange-400" },
-          { label: "En cours",           value: stats.enCours,        color: "text-cyan-400" },
+          { label: "Total",            value: stats.total,         color: "text-white" },
+          { label: "Arrêts Fin Shift", value: stats.arretFinShift, color: "text-red-400" },
+          { label: "Arrêts Urgence",   value: stats.arretUrgence,  color: "text-rose-300" },
+          { label: "Ralentissements",  value: stats.ralent,        color: "text-amber-400" },
+          { label: "Durée cumulée",    value: `${Math.round(stats.dureeTotal)} min`, color: "text-violet-400" },
+          { label: "En cours",         value: stats.enCours,       color: "text-cyan-400" },
         ].map((s) => (
           <motion.div
             key={s.label}
@@ -194,7 +192,6 @@ export function Historique() {
             <option value="">Tous les types</option>
             <option value="ARRET_FIN_SHIFT">Arrêt Fin Shift</option>
             <option value="ARRET_URGENCE">Arrêt d'Urgence</option>
-            <option value="BAISSE_VITESSE">Baisse de Vitesse</option>
             <option value="RALENTISSEMENT">Ralentissement</option>
           </select>
 

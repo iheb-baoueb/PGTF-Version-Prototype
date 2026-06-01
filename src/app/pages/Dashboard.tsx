@@ -492,9 +492,9 @@ export function Dashboard() {
                 itemStyle={{ color: "#06b6d4" }}
                 formatter={(v: number) => [`${v} Hz`, "Vitesse"]}
               />
-              <ReferenceLine y={thresholds.nominalHz} stroke="#10b981" strokeDasharray="4 4" label={{ value: `Nom. ${thresholds.nominalHz}Hz`, fill: "#10b981", fontSize: 9, position: "right" }} />
-              <ReferenceLine y={thresholds.speedRalentHz} stroke="#f59e0b" strokeDasharray="4 4" label={{ value: `Ralent. ${thresholds.speedRalentHz}Hz`, fill: "#f59e0b", fontSize: 9, position: "right" }} />
-              <ReferenceLine y={thresholds.speedMinHz} stroke="#ef4444" strokeDasharray="4 4" label={{ value: `Min ${thresholds.speedMinHz}Hz`, fill: "#ef4444", fontSize: 9, position: "right" }} />
+              <ReferenceLine key="ref-nominal" y={thresholds.nominalHz} stroke="#10b981" strokeDasharray="4 4" label={{ value: `Nom. ${thresholds.nominalHz}Hz`, fill: "#10b981", fontSize: 9, position: "right" }} />
+              <ReferenceLine key="ref-ralent" y={thresholds.speedRalentHz} stroke="#f59e0b" strokeDasharray="4 4" label={{ value: `Ralent. ${thresholds.speedRalentHz}Hz`, fill: "#f59e0b", fontSize: 9, position: "right" }} />
+              <ReferenceLine key="ref-min" y={thresholds.speedMinHz} stroke="#ef4444" strokeDasharray="4 4" label={{ value: `Min ${thresholds.speedMinHz}Hz`, fill: "#ef4444", fontSize: 9, position: "right" }} />
               <Area
                 type="monotone"
                 dataKey="hz"

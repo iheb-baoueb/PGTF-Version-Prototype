@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { ShiftType } from "./MachineContext";
 
-export type EventType = "ARRET_FIN_SHIFT" | "ARRET_URGENCE" | "BAISSE_VITESSE" | "RALENTISSEMENT";
+export type EventType = "ARRET_FIN_SHIFT" | "ARRET_URGENCE" | "RALENTISSEMENT";
 
 export interface PGTFEvent {
   id: number;
@@ -24,10 +24,9 @@ interface EventsContextValue {
 const TEMPLATES: { type: EventType; details: string; speedHz: number; durations: number[] }[] = [
   { type: "ARRET_FIN_SHIFT", speedHz: 0,    details: "Arrêt planifié fin de shift — arrêt normal cycle de production", durations: [8, 12, 15, 22, 35] },
   { type: "ARRET_URGENCE",   speedHz: 0,    details: "Signal arrêt d'urgence activé — intervention sécurité requise", durations: [5, 8, 12] },
-  { type: "BAISSE_VITESSE",  speedHz: 36.5, details: "Baisse de vitesse détectée — fréquence NORDAC 500E en dessous du seuil critique", durations: [4, 7, 10, 15] },
   { type: "RALENTISSEMENT",  speedHz: 38.5, details: "Vitesse en dessous du seuil nominal — ralentissement détecté automatiquement", durations: [3, 5, 8, 12] },
   { type: "ARRET_FIN_SHIFT", speedHz: 0,    details: "Défaut PLC S7-1200 — perte communication Modbus TCP, arrêt séquence", durations: [10, 18, 25] },
-  { type: "BAISSE_VITESSE",  speedHz: 36.2, details: "Baisse de fréquence NORDAC 500E — oscillation détectée sur retour tachymètre", durations: [4, 7, 11] },
+  { type: "RALENTISSEMENT",  speedHz: 36.2, details: "Baisse de fréquence NORDAC 500E — oscillation détectée sur retour tachymètre", durations: [4, 7, 11] },
   { type: "RALENTISSEMENT",  speedHz: 39.1, details: "Ralentissement léger Altivar 71 — charge moteur en hausse, surveillance activée", durations: [2, 4, 6] },
 ];
 
